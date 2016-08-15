@@ -1,158 +1,158 @@
 
 <td id="wikicontent" class="psdescription">
   <h2>
-    <a name="Bakgrund_och_ändamål">
+    <a name="Bakgrund_och_Ã¤ndamÃ¥l">
     </a>
-    Bakgrund och ändamål
-    <a href="#Bakgrund_och_ändamål" class="section_anchor">
+    Bakgrund och Ã¤ndamÃ¥l
+    <a href="#Bakgrund_och_Ã¤ndamÃ¥l" class="section_anchor">
     </a>
   </h2>
   <p>
-    En elektronisk signatur ska säkerställa att elektroniskt överförd information inte har ändrats och för att identifiera informationens avsändare. Genom kryptering skyddas uppgifter i ett dokument mot obehörig åtkomst. 
+    En elektronisk signatur ska sÃ¤kerstÃ¤lla att elektroniskt Ã¶verfÃ¶rd information inte har Ã¤ndrats och fÃ¶r att identifiera informationens avsÃ¤ndare. Genom kryptering skyddas uppgifter i ett dokument mot obehÃ¶rig Ã¥tkomst. 
   </p>
   <h3>
-    <a name="Vad_är_en_elektronisk_signatur">
+    <a name="Vad_Ã¤r_en_elektronisk_signatur">
     </a>
-    Vad är en elektronisk signatur
-    <a href="#Vad_är_en_elektronisk_signatur" class="section_anchor">
+    Vad Ã¤r en elektronisk signatur
+    <a href="#Vad_Ã¤r_en_elektronisk_signatur" class="section_anchor">
     </a>
   </h3>
   <p>
-    En elektroniskt underskriven handling består av två delar. Dels 
+    En elektroniskt underskriven handling bestÃ¥r av tvÃ¥ delar. Dels 
     <i>
       texten
     </i>
-     som skall signeras och dels själva signaturen. För att säkerställa att en 
+     som skall signeras och dels sjÃ¤lva signaturen. FÃ¶r att sÃ¤kerstÃ¤lla att en 
     <i>
       text
     </i>
-     är identisk vid två olika tillfällen beräknas en kontrollsumma av 
+     Ã¤r identisk vid tvÃ¥ olika tillfÃ¤llen berÃ¤knas en kontrollsumma av 
     <i>
       texten
     </i>
-    . Denna kontrollsumma är 
+    . Denna kontrollsumma Ã¤r 
     <i>
       alltid
     </i>
-     densamma så länge 
+     densamma sÃ¥ lÃ¤nge 
     <i>
       texten
     </i>
-     inte har förändrats och därmed kan man garantera att 
+     inte har fÃ¶rÃ¤ndrats och dÃ¤rmed kan man garantera att 
     <i>
       texten
     </i>
-     inte har förändrats över tid. Detta är dock inte tillräckligt utan man behöver även kunna säkerställa 
+     inte har fÃ¶rÃ¤ndrats Ã¶ver tid. Detta Ã¤r dock inte tillrÃ¤ckligt utan man behÃ¶ver Ã¤ven kunna sÃ¤kerstÃ¤lla 
     <i>
       vem
     </i>
-     som har utfärdat 
+     som har utfÃ¤rdat 
     <i>
       texten
     </i>
-    . Detta görs genom att kontrollsumman krypteras med undertecknarens privat nyckel. Dekryptering kan sedan 
+    . Detta gÃ¶rs genom att kontrollsumman krypteras med undertecknarens privat nyckel. Dekryptering kan sedan 
     <i>
       endast
     </i>
-     göras med hjälp av undertecknarens publika nyckel. Nu kan man med säkerhet knyta en viss 
+     gÃ¶ras med hjÃ¤lp av undertecknarens publika nyckel. Nu kan man med sÃ¤kerhet knyta en viss 
     <i>
       text
     </i>
-     till en bestämd utställare. 
+     till en bestÃ¤md utstÃ¤llare. 
   </p>
   <h2>
-    <a name="Hur_använder_jag_signeringstjänsten?">
+    <a name="Hur_anvÃ¤nder_jag_signeringstjÃ¤nsten?">
     </a>
-    Hur använder jag signeringstjänsten?
-    <a href="#Hur_använder_jag_signeringstjänsten?" class="section_anchor">
+    Hur anvÃ¤nder jag signeringstjÃ¤nsten?
+    <a href="#Hur_anvÃ¤nder_jag_signeringstjÃ¤nsten?" class="section_anchor">
     </a>
   </h2>
   <p>
-    Första steget för en applikation är att erbjuda signering för en användare. Efter detta tar signeringstjänsten över och hanterar presentationen av signeringsklineten (t.ex. NetID) med allt vad det innebär, signeringstjänsten tar även hand om certifikatskontrollen som bla. verifierar att certifikatet som används i signaturen inte är spärrat. Det den nyttjande applikationen behöver ta hänsyn till är lagringen av signaturen. Nedan visas en schematisk bild över hur flödet ser ut, de heldragna pilarna är de interaktioner som måste hanteras/implementeras av applikationen. 
+    FÃ¶rsta steget fÃ¶r en applikation Ã¤r att erbjuda signering fÃ¶r en anvÃ¤ndare. Efter detta tar signeringstjÃ¤nsten Ã¶ver och hanterar presentationen av signeringsklineten (t.ex. NetID) med allt vad det innebÃ¤r, signeringstjÃ¤nsten tar Ã¤ven hand om certifikatskontrollen som bla. verifierar att certifikatet som anvÃ¤nds i signaturen inte Ã¤r spÃ¤rrat. Det den nyttjande applikationen behÃ¶ver ta hÃ¤nsyn till Ã¤r lagringen av signaturen. Nedan visas en schematisk bild Ã¶ver hur flÃ¶det ser ut, de heldragna pilarna Ã¤r de interaktioner som mÃ¥ste hanteras/implementeras av applikationen. 
     <img src="https://github.com/Vastra-Gotalandsregionen/oppna-program-signing-service/wiki/images/Signatureservice-process.png"/>
   </p>
   <p>
     <a href="https://github.com/Vastra-Gotalandsregionen/oppna-program-signing-service/wiki/InDepth" rel="nofollow">
-      Läs mer
+      LÃ¤s mer
     </a>
   </p>
 </td>
 
 <td id="wikicontent" class="psdescription">
   <h2>
-    <a name="Bakgrund_och_ändamål">
+    <a name="Bakgrund_och_Ã¤ndamÃ¥l">
     </a>
-    Bakgrund och ändamål
-    <a href="#Bakgrund_och_ändamål" class="section_anchor">
+    Bakgrund och Ã¤ndamÃ¥l
+    <a href="#Bakgrund_och_Ã¤ndamÃ¥l" class="section_anchor">
     </a>
   </h2>
   <p>
-    En elektronisk signatur ska säkerställa att elektroniskt överförd information inte har ändrats och för att identifiera informationens avsändare. Genom kryptering skyddas uppgifter i ett dokument mot obehörig åtkomst. 
+    En elektronisk signatur ska sÃ¤kerstÃ¤lla att elektroniskt Ã¶verfÃ¶rd information inte har Ã¤ndrats och fÃ¶r att identifiera informationens avsÃ¤ndare. Genom kryptering skyddas uppgifter i ett dokument mot obehÃ¶rig Ã¥tkomst. 
   </p>
   <h3>
-    <a name="Vad_är_en_elektronisk_signatur">
+    <a name="Vad_Ã¤r_en_elektronisk_signatur">
     </a>
-    Vad är en elektronisk signatur
-    <a href="#Vad_är_en_elektronisk_signatur" class="section_anchor">
+    Vad Ã¤r en elektronisk signatur
+    <a href="#Vad_Ã¤r_en_elektronisk_signatur" class="section_anchor">
     </a>
   </h3>
   <p>
-    En elektroniskt underskriven handling består av två delar. Dels 
+    En elektroniskt underskriven handling bestÃ¥r av tvÃ¥ delar. Dels 
     <i>
       texten
     </i>
-     som skall signeras och dels själva signaturen. För att säkerställa att en 
+     som skall signeras och dels sjÃ¤lva signaturen. FÃ¶r att sÃ¤kerstÃ¤lla att en 
     <i>
       text
     </i>
-     är identisk vid två olika tillfällen beräknas en kontrollsumma av 
+     Ã¤r identisk vid tvÃ¥ olika tillfÃ¤llen berÃ¤knas en kontrollsumma av 
     <i>
       texten
     </i>
-    . Denna kontrollsumma är 
+    . Denna kontrollsumma Ã¤r 
     <i>
       alltid
     </i>
-     densamma så länge 
+     densamma sÃ¥ lÃ¤nge 
     <i>
       texten
     </i>
-     inte har förändrats och därmed kan man garantera att 
+     inte har fÃ¶rÃ¤ndrats och dÃ¤rmed kan man garantera att 
     <i>
       texten
     </i>
-     inte har förändrats över tid. Detta är dock inte tillräckligt utan man behöver även kunna säkerställa 
+     inte har fÃ¶rÃ¤ndrats Ã¶ver tid. Detta Ã¤r dock inte tillrÃ¤ckligt utan man behÃ¶ver Ã¤ven kunna sÃ¤kerstÃ¤lla 
     <i>
       vem
     </i>
-     som har utfärdat 
+     som har utfÃ¤rdat 
     <i>
       texten
     </i>
-    . Detta görs genom att kontrollsumman krypteras med undertecknarens privat nyckel. Dekryptering kan sedan 
+    . Detta gÃ¶rs genom att kontrollsumman krypteras med undertecknarens privat nyckel. Dekryptering kan sedan 
     <i>
       endast
     </i>
-     göras med hjälp av undertecknarens publika nyckel. Nu kan man med säkerhet knyta en viss 
+     gÃ¶ras med hjÃ¤lp av undertecknarens publika nyckel. Nu kan man med sÃ¤kerhet knyta en viss 
     <i>
       text
     </i>
-     till en bestämd utställare. 
+     till en bestÃ¤md utstÃ¤llare. 
   </p>
   <h2>
-    <a name="Hur_använder_jag_signeringstjänsten?">
+    <a name="Hur_anvÃ¤nder_jag_signeringstjÃ¤nsten?">
     </a>
-    Hur använder jag signeringstjänsten?
-    <a href="#Hur_använder_jag_signeringstjänsten?" class="section_anchor">
+    Hur anvÃ¤nder jag signeringstjÃ¤nsten?
+    <a href="#Hur_anvÃ¤nder_jag_signeringstjÃ¤nsten?" class="section_anchor">
     </a>
   </h2>
   <p>
-    Första steget för en applikation är att erbjuda signering för en användare. Efter detta tar signeringstjänsten över och hanterar presentationen av signeringsklineten (t.ex. NetID) med allt vad det innebär, signeringstjänsten tar även hand om certifikatskontrollen som bla. verifierar att certifikatet som används i signaturen inte är spärrat. Det den nyttjande applikationen behöver ta hänsyn till är lagringen av signaturen. Nedan visas en schematisk bild över hur flödet ser ut, de heldragna pilarna är de interaktioner som måste hanteras/implementeras av applikationen. 
+    FÃ¶rsta steget fÃ¶r en applikation Ã¤r att erbjuda signering fÃ¶r en anvÃ¤ndare. Efter detta tar signeringstjÃ¤nsten Ã¶ver och hanterar presentationen av signeringsklineten (t.ex. NetID) med allt vad det innebÃ¤r, signeringstjÃ¤nsten tar Ã¤ven hand om certifikatskontrollen som bla. verifierar att certifikatet som anvÃ¤nds i signaturen inte Ã¤r spÃ¤rrat. Det den nyttjande applikationen behÃ¶ver ta hÃ¤nsyn till Ã¤r lagringen av signaturen. Nedan visas en schematisk bild Ã¶ver hur flÃ¶det ser ut, de heldragna pilarna Ã¤r de interaktioner som mÃ¥ste hanteras/implementeras av applikationen. 
     <img src="https://github.com/Vastra-Gotalandsregionen/oppna-program-signing-service/wiki/images/Signatureservice-process.png"/>
   </p>
   <p>
     <a href="https://github.com/Vastra-Gotalandsregionen/oppna-program-signing-service/wiki/InDepth" rel="nofollow">
-      Läs mer
+      LÃ¤s mer
     </a>
   </p>
 </td>
@@ -161,9 +161,9 @@
     <tt>
       oppna-program-signing-service
     </tt>
-     ?r en del i V?stra G?talandsregionens satsning p? ?ppen k?llkod inom ramen f?r 
-    <a href="https://github.com/Vastra-Gotalandsregionen//oppna-program">
-      ?ppna Program
+     Ã„r en del i VÃ¤stra GÃ¶talandsregionens satsning pÃ¥ Ã¶ppen kÃ¤llkod inom ramen fÃ¶r 
+    <a href="http://vastra-gotalandsregionen.github.io/oppna-program/">
+      Ã–ppna Program
     </a>
     . 
   </p>
