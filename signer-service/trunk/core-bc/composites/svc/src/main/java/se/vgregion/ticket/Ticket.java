@@ -34,6 +34,6 @@ public final class Ticket {
     }
 
     public String getSignatureAsBase64() {
-        return Base64.encodeBase64String(signature);
+        return Base64.encodeBase64URLSafeString(signature);
     }
 }

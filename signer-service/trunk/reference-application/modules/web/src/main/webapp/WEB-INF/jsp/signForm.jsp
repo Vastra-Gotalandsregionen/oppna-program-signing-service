@@ -18,7 +18,7 @@
       <ul>
         <li>
           <label for="tbs">Data att signera:</label>
-          <input type="text" id="tbs" name="tbs" value="Hej" />
+          <textarea id="tbs" name="tbs"></textarea>
         </li>
         <li>
           <input type="hidden" name="submitUri" id="submitUri_http" value="${submitUrl}"/>

@@ -16,7 +16,7 @@ public class SignatureDataTest {
     public final void shouldBase64EncodeNonce() {
         // Given
         String nonce = "any_random_string";
-        String base64EncodedNonce = Base64.encodeBase64String(nonce.getBytes()).trim();
+        String base64EncodedNonce = Base64.encodeBase64URLSafeString(nonce.getBytes()).trim();
         SignatureData signData = new SignatureData();
         signData.setNonce(nonce);
 

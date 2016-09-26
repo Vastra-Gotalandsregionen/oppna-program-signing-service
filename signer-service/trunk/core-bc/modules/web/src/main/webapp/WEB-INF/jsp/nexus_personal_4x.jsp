@@ -35,7 +35,7 @@
   </form:form>
 
   <div id="spinnerWrapper">
-    <img id="spinner" src="resources/images/animated_spinner.gif"/>
+    <img id="spinner" src="resources/images/spinner.gif"/>
   </div>
 
 </body>

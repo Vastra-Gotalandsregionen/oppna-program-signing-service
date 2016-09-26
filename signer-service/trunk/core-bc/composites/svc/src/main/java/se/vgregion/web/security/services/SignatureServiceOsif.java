@@ -102,7 +102,7 @@ public class SignatureServiceOsif implements ApplicationContextAware, SignatureS
 
             return response.getText();
         }
-        return Base64.encodeBase64String(tbs.getBytes()).trim();
+        return Base64.encodeBase64URLSafeString(tbs.getBytes()).trim();
     }
 
     private void validateResponse(VerifySignatureResponse response) throws SignatureException {
