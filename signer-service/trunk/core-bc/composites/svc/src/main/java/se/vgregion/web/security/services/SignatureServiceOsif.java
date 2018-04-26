@@ -1,23 +1,17 @@
 package se.vgregion.web.security.services;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.SignatureException;
-import java.util.UUID;
-
-import com.logica.mbi.service.v1_0.CollectRequestType;
-import com.logica.mbi.service.v1_0.CollectResponseType;
-import com.logica.mbi.service.v1_0.SignRequestType;
-import com.logica.mbi.service.v1_0.SignResponseType;
-import com.logica.mbi.service.v1_0_0.MbiFault;
-import com.logica.mbi.service.v1_0_0.MbiServicePortType;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
+import se.funktionstjanster.grp.service.v1_0.CollectRequestType;
+import se.funktionstjanster.grp.service.v1_0.CollectResponseType;
+import se.funktionstjanster.grp.service.v1_0.EndUserInfoType;
+import se.funktionstjanster.grp.service.v1_0.OrderResponseType;
+import se.funktionstjanster.grp.service.v1_0.SignRequestType;
+import se.funktionstjanster.grp.service.v1_0_0.GrpFault;
+import se.funktionstjanster.grp.service.v1_0_0.GrpServicePortType;
 import se.sll.wsdl.soap.osif.EncodeTBSRequest;
 import se.sll.wsdl.soap.osif.EncodeTBSResponse;
 import se.sll.wsdl.soap.osif.GenerateChallengeRequest;
@@ -30,6 +24,12 @@ import se.vgregion.signera.signature._1.SignatureEnvelope;
 import se.vgregion.web.signaturestorage.SignatureStorage;
 import se.vgregion.web.signaturestorage.SignatureStoreageException;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.SignatureException;
+import java.util.UUID;
+
 /**
  * Signature Service class. Contains methods to process a signature in different ways, such as verify and save it.
  *
@@ -40,7 +40,7 @@ public class SignatureServiceOsif implements ApplicationContextAware, SignatureS
 
     private ApplicationContext applicationContext;
     private Osif osif;
-    private MbiServicePortType mbiServicePortType;
+    private GrpServicePortType mbiServicePortType;
     private String policy;
     private String displayName;
 
@@ -53,7 +53,7 @@ public class SignatureServiceOsif implements ApplicationContextAware, SignatureS
      * @see <a href="http://sveid.episerverhotell.net/upload/OSIF%20API%20Specifikation%202%200.pdf">OSIF
      *      API-Specifikation 2.0</a>
      */
-    public SignatureServiceOsif(Osif osif, String serviceId, MbiServicePortType mbiServicePortType, String displayName) {
+    public SignatureServiceOsif(Osif osif, String serviceId, GrpServicePortType mbiServicePortType, String displayName) {
         this.osif = osif;
         this.mbiServicePortType = mbiServicePortType;
         /*
@@ -189,17 +189,24 @@ public class SignatureServiceOsif implements ApplicationContextAware, SignatureS
     }
 
     @Override
-    public String sendMobileSignRequest(SignatureData signData) throws SignatureException {
+    public String sendMobileSignRequest(SignatureData signData, String remoteAddr) throws SignatureException {
         SignRequestType signRequest = new SignRequestType();
-        signRequest.setUserVisibleData(signData.getEncodedTbs());
+        signRequest.setUserVisibleData(SignatureData.urlSafeToNormalBase64(signData.getEncodedTbs()));
         signRequest.setPolicy(policy);
         signRequest.setDisplayName(displayName);
         signRequest.setPersonalNumber(signData.getPersonalNumber());
+        signRequest.setProvider("bankid");
+
+        EndUserInfoType endUserInfoType = new EndUserInfoType();
+        endUserInfoType.setType("IP_ADDR");
+        endUserInfoType.setValue(remoteAddr);
+
+        signRequest.getEndUserInfo().add(endUserInfoType);
 
         try {
-            SignResponseType responseType = mbiServicePortType.sign(signRequest);
+            OrderResponseType responseType = mbiServicePortType.sign(signRequest);
             return responseType.getOrderRef();
-        } catch (MbiFault mbiFault) {
+        } catch (GrpFault mbiFault) {
             throw new SignatureException(mbiFault);
         }
     }
@@ -213,7 +220,7 @@ public class SignatureServiceOsif implements ApplicationContextAware, SignatureS
             collectRequest.setDisplayName(displayName);
 
             return mbiServicePortType.collect(collectRequest);
-        } catch (MbiFault mbiFault) {
+        } catch (GrpFault mbiFault) {
             throw new SignatureException(mbiFault);
         }
     }

@@ -33,6 +33,18 @@ public class SignatureData implements Serializable {
     private String ticket;
     private String personalNumber;
 
+    // The mobile bankid service requires normal base64
+    public static String urlSafeToNormalBase64(String urlSafeEncodedTbs) {
+        try {
+            byte[] bytes = Base64.decodeBase64(urlSafeEncodedTbs);
+            String string = new String(bytes, "UTF-8");
+            return Base64.encodeBase64String(string.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            // won't happen
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getTbs() {
         return tbs;
     }

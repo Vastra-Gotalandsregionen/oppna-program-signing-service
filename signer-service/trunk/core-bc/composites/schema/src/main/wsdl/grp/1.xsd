@@ -1,0 +1,301 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://funktionstjanster.se/grp/service/v1.0.0/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" name="GrpService" targetNamespace="http://funktionstjanster.se/grp/service/v1.0.0/">
+    <wsdl:documentation></wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema xmlns:tns="http://funktionstjanster.se/grp/service/v1.0.0/" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://funktionstjanster.se/grp/service/v1.0.0/">
+            <xsd:simpleType name="PersonalNumberType">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        An personal number should have length 12 and contain only digits.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:restriction base="xsd:string">
+                    <xsd:pattern value="\d{12,12}"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="ProgressStatusType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>The values may be changed later.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:enumeration value="COMPLETE"/>
+                    <xsd:enumeration value="USER_SIGN"/>
+                    <xsd:enumeration value="OUTSTANDING_TRANSACTION"/>
+                    <xsd:enumeration value="NO_CLIENT"/>
+                    <xsd:enumeration value="USER_REQ"/>
+                    <xsd:enumeration value="STARTED"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="FaultStatusType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>The values may be changed later.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:enumeration value="INVALID_PARAMETERS"/>
+                    <xsd:enumeration value="ACCESS_DENIED_RP"/>
+                    <xsd:enumeration value="RETRY"/>
+                    <xsd:enumeration value="INTERNAL_ERROR"/>
+                    <xsd:enumeration value="ALREADY_COLLECTED"/>
+                    <xsd:enumeration value="EXPIRED_TRANSACTION"/>
+                    <xsd:enumeration value="TIMEOUT"/>
+                    <xsd:enumeration value="USER_CANCEL"/>
+                    <xsd:enumeration value="CLIENT_ERR"/>
+                    <xsd:enumeration value="CERTIFICATE_ERR"/>
+                    <xsd:enumeration value="CANCELLED"/>
+                    <xsd:enumeration value="START_FAILED"/>
+                    <xsd:enumeration value="ALREADY_IN_PROGRESS"/>
+                    <xsd:enumeration value="REQ_PRECOND"/>
+                    <xsd:enumeration value="REQ_ERROR"/>
+                    <xsd:enumeration value="REQ_BLOCKED"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="EndUserInfoType">
+                <xsd:sequence>
+                    <xsd:element name="type">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:minLength value="1"/>
+                                <xsd:maxLength value="20"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="value">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:minLength value="1"/>
+                                <xsd:maxLength value="1024"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="RequirementAlternativesType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="7" minOccurs="0" name="requirement" type="tns:RequirementType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="RequirementType">
+                <xsd:sequence>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="10" minOccurs="1" name="condition" type="tns:ConditionType"/>
+                    </xsd:sequence>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ConditionType">
+                <xsd:sequence>
+                    <xsd:element name="key" type="tns:RequirementConditionNameType"/>
+                    <xsd:element maxOccurs="20" minOccurs="1" name="value">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:minLength value="1"/>
+                                <xsd:maxLength value="1024"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="RequirementConditionNameType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:minLength value="1"/>
+                    <xsd:maxLength value="50"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="Property">
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="value" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="AuthenticateRequestType">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" name="policy" type="xsd:string"/>
+                    <xsd:element minOccurs="1" name="provider" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="displayName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="transactionId" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="personalNumber" type="tns:PersonalNumberType"/>
+                    <xsd:element maxOccurs="20" minOccurs="0" name="endUserInfo" type="tns:EndUserInfoType"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="requirementAlternatives" type="tns:RequirementAlternativesType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="SignRequestType">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" name="policy" type="xsd:string"/>
+                    <xsd:element minOccurs="1" name="provider" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="displayName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="transactionId" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="personalNumber" type="tns:PersonalNumberType"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="userVisibleData" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="userNonVisibleData" type="xsd:string"/>
+                    <xsd:element maxOccurs="20" minOccurs="0" name="endUserInfo" type="tns:EndUserInfoType"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="requirementAlternatives" type="tns:RequirementAlternativesType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="SignatureFileRequestType">
+                <xsd:sequence>
+                    <xsd:element minOccurs="1" name="policy" type="xsd:string"/>
+                    <xsd:element minOccurs="1" name="provider" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="displayName" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="transactionId" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="personalNumber" type="tns:PersonalNumberType"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="userVisibleData" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="userNonVisibleData" type="xsd:string"/>
+                    <xsd:element name="fileName">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:minLength value="5"/>
+                                <xsd:maxLength value="340"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="fileContent" type="xsd:base64Binary" xmime:contentType="application/octet-stream" xmime:expectedContentTypes="application/octet-stream"/>
+                    <xsd:element maxOccurs="20" minOccurs="1" name="endUserInfo" type="tns:EndUserInfoType"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="requirementAlternatives" type="tns:RequirementAlternativesType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="CollectRequestType">
+                <xsd:sequence>
+                    <xsd:element name="policy" type="xsd:string"/>
+                    <xsd:element name="provider" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="displayName" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="transactionId" type="xsd:string"/>
+                    <xsd:element name="orderRef" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderResponseType">
+                <xsd:sequence>
+                    <xsd:element name="transactionId" type="xsd:string"/>
+                    <xsd:element name="orderRef" type="xsd:string"/>
+                    <xsd:element name="AutoStartToken" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="CollectResponseType">
+                <xsd:sequence>
+                    <xsd:element name="transactionId" type="xsd:string"/>
+                    <xsd:element name="progressStatus" type="tns:ProgressStatusType"/>
+                    <xsd:sequence minOccurs="0">
+                        <xsd:element name="signature" type="xsd:string"/>
+                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="attributes" type="tns:Property"/>
+                    </xsd:sequence>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="GrpFaultType">
+                <xsd:sequence>
+                    <xsd:element name="faultStatus" type="tns:FaultStatusType"/>
+                    <xsd:element name="detailedDescription" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="AuthenticateRequest" type="tns:AuthenticateRequestType"/>
+            <xsd:element name="AuthenticateResponse" type="tns:OrderResponseType"/>
+            <xsd:element name="SignRequest" type="tns:SignRequestType"/>
+            <xsd:element name="SignResponse" type="tns:OrderResponseType"/>
+            <xsd:element name="CollectRequest" type="tns:CollectRequestType"/>
+            <xsd:element name="CollectResponse" type="tns:CollectResponseType"/>
+            <xsd:element name="SignatureFileRequest" type="tns:SignatureFileRequestType"/>
+            <xsd:element name="SignatureFileResponse" type="tns:OrderResponseType"/>
+            <xsd:element name="GrpFault" type="tns:GrpFaultType"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="GrpFault">
+        <wsdl:part name="GrpFault" element="tns:GrpFault"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_Sign">
+        <wsdl:part name="SignRequest" element="tns:SignRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_CollectResponse">
+        <wsdl:part name="CollectResponse" element="tns:CollectResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_Authenticate">
+        <wsdl:part name="AuthenticateRequest" element="tns:AuthenticateRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_Collect">
+        <wsdl:part name="CollectRequest" element="tns:CollectRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_SignResponse">
+        <wsdl:part name="SignResponse" element="tns:SignResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_AuthenticateResponse">
+        <wsdl:part name="AuthenticateResponse" element="tns:AuthenticateResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_FileSign">
+        <wsdl:part name="SignatureFileRequest" element="tns:SignatureFileRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="GrpServicePortType_FileSignResponse">
+        <wsdl:part name="SignatureFileResponse" element="tns:SignatureFileResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="GrpServicePortType">
+        <wsdl:operation name="Authenticate">
+            <wsdl:input message="tns:GrpServicePortType_Authenticate"></wsdl:input>
+            <wsdl:output message="tns:GrpServicePortType_AuthenticateResponse"></wsdl:output>
+            <wsdl:fault name="GrpFault" message="tns:GrpFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Sign">
+            <wsdl:input message="tns:GrpServicePortType_Sign"></wsdl:input>
+            <wsdl:output message="tns:GrpServicePortType_SignResponse"></wsdl:output>
+            <wsdl:fault name="GrpFault" message="tns:GrpFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Collect">
+            <wsdl:input message="tns:GrpServicePortType_Collect"></wsdl:input>
+            <wsdl:output message="tns:GrpServicePortType_CollectResponse"></wsdl:output>
+            <wsdl:fault name="GrpFault" message="tns:GrpFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="FileSign">
+            <wsdl:input message="tns:GrpServicePortType_FileSign"></wsdl:input>
+            <wsdl:output message="tns:GrpServicePortType_FileSignResponse"></wsdl:output>
+            <wsdl:fault name="GrpFault" message="tns:GrpFault"></wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GrpServiceSoapBinding" type="tns:GrpServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="Authenticate">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GrpFault">
+                <soap:fault name="GrpFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Sign">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GrpFault">
+                <soap:fault name="GrpFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Collect">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GrpFault">
+                <soap:fault name="GrpFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="FileSign">
+            <wsp:PolicyReference URI="#ForceMTOM" wsdl:required="false"/>
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GrpFault">
+                <soap:fault name="GrpFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsp:Policy wsu:Id="ForceMTOM">
+        <wsoma:OptimizedMimeSerialization/>
+    </wsp:Policy>
+</wsdl:definitions>
