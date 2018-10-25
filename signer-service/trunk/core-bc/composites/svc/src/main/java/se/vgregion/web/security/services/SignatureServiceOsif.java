@@ -197,6 +197,17 @@ public class SignatureServiceOsif implements ApplicationContextAware, SignatureS
         signRequest.setPersonalNumber(signData.getPersonalNumber());
         signRequest.setProvider("bankid");
 
+//        ConditionType conditionType = new ConditionType();
+//        conditionType.setKey("AllowFingerprint");
+//        conditionType.getValue().add("yes");
+//
+//        RequirementType requirementType = new RequirementType();
+//        requirementType.getCondition().add(conditionType);
+//
+//        RequirementAlternativesType requirementAlternativesType = new RequirementAlternativesType();
+//        requirementAlternativesType.getRequirement().add(requirementType);
+//        signRequest.setRequirementAlternatives(requirementAlternativesType);
+
         EndUserInfoType endUserInfoType = new EndUserInfoType();
         endUserInfoType.setType("IP_ADDR");
         endUserInfoType.setValue(remoteAddr);
