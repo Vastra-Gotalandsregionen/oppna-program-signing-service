@@ -6,7 +6,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="requiresActiveX=true"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>Signering - Mobilt BankID</title>
     <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="resources/scripts/main.js" charset="UTF-8"></script>

@@ -13,6 +13,9 @@ $(document).ready(function() {
     if(retVal !== 0) { // User Abort
       $('#errorCode').attr('value', retVal)
       $("#cancel-form").submit() 
+    } else {
+      // Success
+      postSignature($tbs.val(), $postUrl.val());
     }
 
   } else {
@@ -53,9 +56,29 @@ var initSignController = function(typePlugin, tbs, postUrl) {
   document.iid.SetProperty('DataToBeSigned', tbs);
   document.iid.SetProperty('IncludeCaCert', 'true');
   document.iid.SetProperty('IncludeRootCaCert', 'true');
-  document.iid.SetProperty('PostURL', postUrl);
   document.iid.SetProperty('Base64', 'true');
   document.iid.SetProperty('SignReturnName', 'signature');
   document.iid.SetProperty('DataReturnName', 'encodedTbs');
 
 }
+
+var postSignature = function (tbs, postUrl) {
+  var payload = {
+    encodedTbs: tbs,
+    signature: decodeURIComponent(document.iid.GetProperty('signature'))
+  };
+  var form = document.createElement('form');
+  form.style.visibility = 'hidden';
+  form.method = 'POST';
+  form.action = postUrl;
+  var keys = Object.keys(payload);
+  for (index in keys) {
+    var key = keys[index];
+    var input = document.createElement('input');
+    input.name = key;
+    input.value = payload[key];
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+};
