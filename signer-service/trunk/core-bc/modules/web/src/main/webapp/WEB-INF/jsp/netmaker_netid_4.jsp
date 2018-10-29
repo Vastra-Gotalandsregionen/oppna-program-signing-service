@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <title>Signering - Telia/SITHS</title>
   <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.1.min.js"></script>
-  <script type="text/javascript" src="resources/scripts/netId-plugin.js"></script>
+  <script type="text/javascript" src="resources/scripts/netId-plugin.js?r=1"></script>
   <style type="text/css">
     @import 'resources/styles/form.css';
   </style>
