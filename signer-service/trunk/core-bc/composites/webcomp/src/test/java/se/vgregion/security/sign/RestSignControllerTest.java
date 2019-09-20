@@ -16,10 +16,12 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.bouncycastle.util.encoders.Base64;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +56,7 @@ public class RestSignControllerTest {
 
     private RestSignController controller;
     private String baseAddress = "http://localhost:9000/service";
+    private Server server;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -72,7 +75,12 @@ public class RestSignControllerTest {
         sf.setResourceClasses(RestSignController.class);
         sf.setResourceProvider(RestSignController.class, new SingletonResourceProvider(controller));
         sf.setAddress(baseAddress);
-        sf.create();
+        server = sf.create();
+    }
+
+    @After
+    public void destroy() {
+        server.stop();
     }
 
     @Test

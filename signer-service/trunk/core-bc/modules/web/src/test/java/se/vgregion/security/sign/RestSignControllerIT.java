@@ -1,19 +1,17 @@
 package se.vgregion.security.sign;
 
+import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.bouncycastle.util.encoders.Base64;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
@@ -44,6 +42,7 @@ public class RestSignControllerIT {
 
     @Autowired
     private RestSignController controller;
+    private Server server;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -58,8 +57,17 @@ public class RestSignControllerIT {
         sf.setResourceClasses(RestSignController.class);
         sf.setResourceProvider(RestSignController.class, new SingletonResourceProvider(controller));
         sf.setAddress(baseAddress);
-        sf.create();
+        server = sf.create();
     }
+
+    @After
+    public void destroy() {
+        if (server != null) {
+            server.stop();
+            server.destroy();
+        }
+    }
+
 
     @Test
     @Ignore

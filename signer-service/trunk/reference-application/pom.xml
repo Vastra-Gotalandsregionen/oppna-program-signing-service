@@ -20,11 +20,6 @@ Generation time : 2010-10-14 11:29:06 CEST
   <version>1.3-SNAPSHOT</version>
   <name>${project.artifactId}</name>
 
-  <properties>
-    <compileSource>1.5</compileSource>
-	<compileTarget>1.5</compileTarget>
-  </properties>
-
   <modules>
     <module>composites/types</module>
     <module>composites/svc</module>

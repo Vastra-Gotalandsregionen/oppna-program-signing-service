@@ -47,6 +47,8 @@ public class ClientXController {
     private String ticketUrl;
     @Value("${http.port}")
     private String httpPort;
+    @Value("${http.scheme}")
+    private String httpScheme;
 
     @ModelAttribute("signatures")
     public Collection<Signature> getSignatures() {
@@ -74,7 +76,7 @@ public class ClientXController {
     @RequestMapping(value = "/saveSignature", method = POST)
     public void postback(HttpServletRequest req, HttpServletResponse response,
                          @RequestBody SignatureEnvelope envelope) throws IOException {
-        StringBuilder relocateUrl = new StringBuilder("http://").append(req.getLocalName()).append(":" + httpPort)
+        StringBuilder relocateUrl = new StringBuilder(httpScheme + "://").append(req.getLocalName()).append(":" + httpPort)
                 .append(req.getContextPath()).append(req.getServletPath());
 
         if (envelope.getErrorCode() > 0) {

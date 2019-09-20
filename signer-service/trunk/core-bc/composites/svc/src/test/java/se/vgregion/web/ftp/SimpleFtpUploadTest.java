@@ -11,6 +11,7 @@ import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.util.IoUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:fake-ftp-server-config.xml")
+@Ignore
 public class SimpleFtpUploadTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleFtpUploadTest.class);

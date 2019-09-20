@@ -28,4 +28,44 @@
     <url>https://oppna-program-signing-service.googlecode.com/svn/signer-service/trunk/</url>
   </scm>
 
+  <properties>
+    <compileSource>11</compileSource>
+    <targetSource>11</targetSource>
+    <spring.fw.version>4.3.25.RELEASE</spring.fw.version>
+    <apache.cxf.version>3.3.3</apache.cxf.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${compileSource}</source>
+          <target>${targetSource}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+     <!-- <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>-->
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
