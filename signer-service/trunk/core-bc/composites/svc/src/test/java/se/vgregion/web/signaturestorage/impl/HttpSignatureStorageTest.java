@@ -1,53 +1,39 @@
 package se.vgregion.web.signaturestorage.impl;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicStatusLine;
-import org.apache.http.params.HttpParams;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.matchers.Times;
 import org.springframework.oxm.Marshaller;
 import se.vgregion.signera.signature._1.SignatureEnvelope;
 import se.vgregion.signera.signature._1.SignatureFormat;
-import se.vgregion.web.HttpMessageHelper;
 import se.vgregion.web.security.services.SignatureEnvelopeFactory;
 import se.vgregion.web.signaturestorage.SignatureStoreageException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.mockito.BDDMockito.mock;
+import static org.mockserver.model.HttpRequest.request;
 
 public class HttpSignatureStorageTest {
     private static final String SIGNATURE_NAME = "signaturename";
     private static final SignatureFormat SIGNATURE_FORMAT = SignatureFormat.CMS;
     private static final String SIGNATURE = "signature";
-    private static final String REDIRECT_URI = "http://example.com";
+    private static final String REDIRECT_URI = "http://localhost:8765";
     private static URI anyUri;
-
-    @Mock
-    private HttpMessageHelper httpHelper;
-    @Mock
-    private HttpClient httpClient;
-    @Mock
-    private HttpPost httpPost;
-    @Mock
-    private HttpResponse httpResponse;
-    @Mock
-    private HttpParams httpParams;
 
     private SignatureEnvelope envelope;
 
     private HttpSignatureStorage signatureStorage;
     @Mock
-    private Marshaller marshaller;
+    private Marshaller marshaller = mock(Marshaller.class);
 
     static {
         try {
@@ -57,22 +43,31 @@ public class HttpSignatureStorageTest {
         }
     }
 
+    private static ClientAndServer mockServer;
+
+    @BeforeClass
+    public static void startServer() {
+        mockServer = ClientAndServer.startClientAndServer(8765);
+    }
+
+    @AfterClass
+    public static void stopServer() {
+        mockServer.stop();
+    }
+
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        signatureStorage = new HttpSignatureStorage(httpClient, httpHelper, marshaller);
+        signatureStorage = new HttpSignatureStorage(HttpClient.newBuilder().build(), marshaller);
         envelope = SignatureEnvelopeFactory.createSignatureEnvelope(SIGNATURE_NAME, SIGNATURE_FORMAT, SIGNATURE);
-        given(httpPost.getParams()).willReturn(httpParams);
     }
 
     @Test
     public final void shouldReturnRedirectUriIfSubmitResponseIssuesAnRedirect() throws Exception {
         // Given
-        given(httpHelper.createHttpPostMethod(any(URI.class))).willReturn(httpPost);
-        given(httpHelper.createEntity(anyString())).willReturn(null);
-        given(httpClient.execute(any(HttpPost.class))).willReturn(httpResponse);
-        given(httpHelper.getLocationHeader(any(HttpResponse.class))).willReturn(REDIRECT_URI);
-        given(httpHelper.getResponseStatusCode(any(HttpResponse.class))).willReturn(MOVED_TEMPORARILY);
+        mockServer.when(request(), Times.once())
+                .respond(org.mockserver.model.HttpResponse.response()
+                        .withHeader("Location", REDIRECT_URI)
+                        .withStatusCode(302));
 
         // When
         String actualRedirectUri = signatureStorage.submitSignature(anyUri, envelope);
@@ -84,11 +79,11 @@ public class HttpSignatureStorageTest {
     @Test
     public final void shouldReturnEmptyStringIfSubmitResponseIsSuccessful() throws Exception {
         // Given
-        given(httpHelper.createHttpPostMethod(any(URI.class))).willReturn(httpPost);
-        given(httpHelper.createEntity(anyString())).willReturn(null);
-        given(httpClient.execute(any(HttpPost.class))).willReturn(httpResponse);
-        given(httpHelper.getLocationHeader(any(HttpResponse.class))).willReturn(REDIRECT_URI);
-        given(httpHelper.getResponseStatusCode(any(HttpResponse.class))).willReturn(OK);
+        mockServer.when(request(), Times.once())
+                .respond(org.mockserver.model.HttpResponse.response()
+                        .withHeader("Location", "")
+                        .withStatusCode(302));
+
         // When
         String actualRedirectUri = signatureStorage.submitSignature(anyUri, envelope);
 
@@ -99,13 +94,9 @@ public class HttpSignatureStorageTest {
     @Test(expected = SignatureStoreageException.class)
     public final void shouldThrowSignatureStoreageExceptionIfSubmitFails() throws Exception {
         // Given
-        given(httpHelper.createHttpPostMethod(any(URI.class))).willReturn(httpPost);
-        given(httpHelper.createEntity(anyString())).willReturn(null);
-        given(httpClient.execute(any(HttpPost.class))).willReturn(httpResponse);
-        given(httpHelper.getLocationHeader(any(HttpResponse.class))).willReturn(REDIRECT_URI);
-        given(httpHelper.getResponseStatusCode(any(HttpResponse.class))).willReturn(BAD_REQUEST);
-        given(httpResponse.getStatusLine()).willReturn(new BasicStatusLine(new HttpVersion(1, 1), BAD_REQUEST.value()
-                , "Bad since..."));
+        mockServer.when(request(), Times.once())
+                .respond(org.mockserver.model.HttpResponse.response()
+                        .withStatusCode(400));
 
         // When
         signatureStorage.submitSignature(anyUri, envelope);

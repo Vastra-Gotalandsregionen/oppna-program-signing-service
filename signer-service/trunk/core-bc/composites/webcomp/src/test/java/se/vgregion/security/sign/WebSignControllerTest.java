@@ -200,7 +200,7 @@ public class WebSignControllerTest {
         ModelAndView modelAndView = signController.handleException(exception, request);
         // Then
         assertEquals("errorHandling", modelAndView.getViewName());
-        assertTrue(modelAndView.getModelMap().containsKey("class"));
+        assertTrue(modelAndView.getModelMap().containsKey("clazz"));
         assertTrue(modelAndView.getModelMap().containsValue(ClassUtils.getShortName(exception.getClass())));
     }
 

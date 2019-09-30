@@ -17,15 +17,4 @@
     location="classpath:default.properties, file:${user.home}/.ss/config.properties"
     ignore-resource-not-found="false" ignore-unresolvable="true" />
 
-  <bean class="org.apache.http.params.HttpConnectionParamBean">
-    <constructor-arg ref="params" />
-    <property name="connectionTimeout" value="${connectionTimeout}" />
-    <property name="soTimeout" value="${soTimeout}" />
-  </bean>
-
-  <bean class="org.apache.http.conn.params.ConnManagerParamBean">
-    <constructor-arg ref="params" />
-    <property name="maxTotalConnections" value="${maxTotalConnections}" />
-  </bean>
-
 </beans>

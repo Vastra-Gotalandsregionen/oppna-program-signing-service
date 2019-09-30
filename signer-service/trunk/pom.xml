@@ -33,6 +33,7 @@
     <targetSource>11</targetSource>
     <spring.fw.version>4.3.25.RELEASE</spring.fw.version>
     <apache.cxf.version>3.3.3</apache.cxf.version>
+    <mockito.version>1.10.19</mockito.version>
   </properties>
 
   <build>
@@ -66,6 +67,22 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.28</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.28</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>1.7.28</version>
     </dependency>
   </dependencies>
 </project>

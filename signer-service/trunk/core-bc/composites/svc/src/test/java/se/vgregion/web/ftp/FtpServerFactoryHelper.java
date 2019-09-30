@@ -1,6 +1,6 @@
 package se.vgregion.web.ftp;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 

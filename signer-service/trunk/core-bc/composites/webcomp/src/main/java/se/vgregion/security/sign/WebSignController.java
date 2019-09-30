@@ -313,7 +313,7 @@ public class WebSignController extends AbstractSignController {
     public ModelAndView handleException(Exception ex, HttpServletRequest request) {
         LOGGER.error("Generic Error Handling: " + ex.getMessage(), ex);
         ModelMap model = new ModelMap();
-        model.addAttribute("class", ClassUtils.getShortName(ex.getClass()));
+        model.addAttribute("clazz", ClassUtils.getShortName(ex.getClass()));
         model.addAttribute("message", ex.getMessage());
         return new ModelAndView("errorHandling", model);
     }
