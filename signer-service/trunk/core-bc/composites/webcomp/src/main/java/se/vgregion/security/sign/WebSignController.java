@@ -70,18 +70,6 @@ public class WebSignController extends AbstractSignController {
         super(signatureService, eLegTypes, ticketManager);
     }
 
-    @Autowired
-    @Required
-    public void setInternalNetworks(String internalNetworks) {
-        if (internalNetworks.length() >= 3) { //minimum length of a network
-            String[] internalIpsArray = internalNetworks.replaceAll(" ", "").split(",");
-            this.internalNetworks = new HashSet<String>(Arrays.asList(internalIpsArray));
-        } else {
-            this.internalNetworks = new HashSet<String>();
-        }
-    }
-
-
     /**
      * Setup an {@link java.beans.PropertyEditor.PropertyEditor} to handle conversion of a {@link String}
      * representing an {@link ELegType} to ELegType.
@@ -124,33 +112,6 @@ public class WebSignController extends AbstractSignController {
         model.addAttribute("ticket", signData.getTicket());
         model.addAttribute("signData", signData);
         return "clientTypeSelection";
-    }
-
-    private void validateInternalAccess(HttpServletRequest req) throws TicketException {
-        String header = req.getHeader("x-forwarded-for");
-
-        LOGGER.debug("No ticket provided. Validate request with x-forwarded-for header [" + header + "].");
-
-        if (header == null) {
-            throwTicketException(header);
-        }
-
-        boolean internal = false;
-        for (String network : internalNetworks) {
-            if (header.startsWith(network)) {
-                internal = true;
-            }
-        }
-
-        if (!internal) {
-            throwTicketException(header);
-        }
-    }
-
-    private void throwTicketException(String header) throws TicketException {
-        LOGGER.warn("The x-forward-for header was " + header + " which is not allowed for access to the Signing Service"
-                + " without a ticket.");
-        throw new TicketException("A ticket is needed in order to proceed.");
     }
 
     private void validateTicket(Ticket ticket) throws TicketException {
@@ -362,7 +323,7 @@ public class WebSignController extends AbstractSignController {
             LOGGER.debug("Ticket used: " + ticketDto.toString());
             validateTicket(ticketDto.toTicket());
         } else {
-            validateInternalAccess(req);
+            throw new TicketException("No ticket was attached with the request.");
         }
     }
 
