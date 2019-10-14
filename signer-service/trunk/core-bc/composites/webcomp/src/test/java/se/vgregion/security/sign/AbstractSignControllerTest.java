@@ -29,7 +29,7 @@ public class AbstractSignControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        signController = new AbstractSignController(signatureService, eLegTypes, TicketManager.getInstance()) {
+        signController = new AbstractSignController(signatureService, eLegTypes, new TicketManager()) {
         };
     }
 

@@ -4,7 +4,6 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
-import org.bouncycastle.util.encoders.Base64;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -27,6 +26,7 @@ import javax.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -47,7 +47,7 @@ public class RestSignControllerIT {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        TicketManager ticketManager = TicketManager.getInstance();
+        TicketManager ticketManager = new TicketManager();
         ServiceIdService service = mock(ServiceIdService.class);
         when(service.containsServiceId(eq("existingServiceId"))).thenReturn(true);
         when(service.containsServiceId(eq("nonExistingServiceId"))).thenReturn(false);
@@ -79,7 +79,7 @@ public class RestSignControllerIT {
 
         //Create the SignatureVerificationRequest
         SignatureVerificationRequest request = new SignatureVerificationRequest();
-        request.setSignature(new String(Base64.encode(baos.toByteArray())));
+        request.setSignature(new String(Base64.getEncoder().encode(baos.toByteArray())));
         request.setSignatureFormat(SignatureFormat.XMLDIGSIG);
 
         //Marshal the SignatureVerificationRequest

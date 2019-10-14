@@ -1,21 +1,18 @@
 package se.vgregion.ticket;
 
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.Signature;
-import java.security.SignatureException;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import se.vgregion.web.security.services.ServiceIdService;
+
+import javax.annotation.PostConstruct;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 /**
  * Class for managing tasks associated with {@link Ticket}s, like creation and verification. To ensure that a
@@ -28,6 +25,7 @@ import se.vgregion.web.security.services.ServiceIdService;
  * @author Anders Asplund
  * @author Patrik Bergström
  */
+@Service
 public final class TicketManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(TicketManager.class);
@@ -35,43 +33,61 @@ public final class TicketManager {
     private static final Long KEEP_ALIVE = 5 * MILLIS_IN_A_MINUTE; // 5 minutes;
     private static final String KEY_ALGORITHM = "DSA";
     private static final int KEY_SIZE = 1024;
-    private static final String SIGNATURE_ALGORITHM = "SHA512withDSA";
-    private static final String PROVIDER_NAME = "BC";
+    private static final String SIGNATURE_ALGORITHM = "SHA256withDSA";
 
-    //This is a Spring bean but created with a factory method so it's still a pure singleton.
-    private static TicketManager instance = null;
+    @Value("${ticket.sign.key.private}")
+    private String privateKeyBase64;
+
+    @Value("${ticket.sign.key.public}")
+    private String publicKeyBase64;
 
     private ServiceIdService serviceIdService;
 
-    private final KeyPair keyPair;
-    private final Signature signature;
+    private KeyPair keyPair;
+    private Signature signature;
 
-    private TicketManager() {
-        BouncyCastleProvider provider = new BouncyCastleProvider();
-        Security.addProvider(provider);
+    // May be used to generate static keys used in application.
+    public static void main(String[] args) {
         try {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance(KEY_ALGORITHM);
             kpg.initialize(KEY_SIZE, new SecureRandom());
-            keyPair = kpg.generateKeyPair();
-            signature = Signature.getInstance(SIGNATURE_ALGORITHM, PROVIDER_NAME);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchProviderException e) {
-            throw new RuntimeException(e);
+            KeyPair keyPair = kpg.generateKeyPair();
+
+            byte[] encodedPrivateKey = keyPair.getPrivate().getEncoded();
+            byte[] encodedPublicKey = keyPair.getPublic().getEncoded();
+
+            String privateKeyBase64 = Base64.getEncoder().encodeToString(encodedPrivateKey);
+            String publicKeyBase64 = Base64.getEncoder().encodeToString(encodedPublicKey);
+
+            System.out.println(privateKeyBase64);
+            System.out.println(publicKeyBase64);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Factory method to get the singleton instance.
-     *
-     * @return the instance
-     */
-    public static synchronized TicketManager getInstance() {
-        if (instance == null) {
-            TicketManager ticketManager = new TicketManager();
-            instance = ticketManager;
+    public TicketManager() {
+
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+
+            PrivateKey privateKey = keyFactory.generatePrivate(
+                    new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyBase64))
+            );
+
+            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyBase64));
+
+            PublicKey publicKey = keyFactory.generatePublic(pubKeySpec);
+
+            keyPair = new KeyPair(publicKey, privateKey);
+            signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
         }
-        return instance;
     }
 
     @Autowired

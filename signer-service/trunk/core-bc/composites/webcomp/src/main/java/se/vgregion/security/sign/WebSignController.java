@@ -70,12 +70,6 @@ public class WebSignController extends AbstractSignController {
         super(signatureService, eLegTypes, ticketManager);
     }
 
-    /**
-     * Setup an {@link java.beans.PropertyEditor.PropertyEditor} to handle conversion of a {@link String}
-     * representing an {@link ELegType} to ELegType.
-     *
-     * @param binder WebDataBinder
-     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(ELegType.class, new ELegTypeEditor(geteLegTypes()));

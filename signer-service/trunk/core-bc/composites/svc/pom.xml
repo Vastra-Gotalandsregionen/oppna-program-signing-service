@@ -85,6 +85,12 @@
       <groupId>se.vgregion.commons-util</groupId>
       <artifactId>commons-util-core-bc-composite-security</artifactId>
       <version>3.24</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>bcprov-jdk16</artifactId>
+          <groupId>org.bouncycastle</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.ftpserver</groupId>
@@ -111,11 +117,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-ext-jdk16</artifactId>
-      <version>1.46</version>
-    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-vfs2</artifactId>

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.DelegatingServletOutputStream;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.util.ClassUtils;
@@ -47,7 +48,7 @@ public class WebSignControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        signController = new WebSignController(signatureService, eLegTypes, TicketManager.getInstance());
+        signController = new WebSignController(signatureService, eLegTypes, createTicketManager());
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -91,7 +92,7 @@ public class WebSignControllerTest {
     }
 
     private void setATicketOnSignatureData(SignatureData signData) throws TicketException {
-        TicketManager ticketManager = TicketManager.getInstance();
+        TicketManager ticketManager = createTicketManager();
         ServiceIdService service = mock(ServiceIdService.class);
         given(service.containsServiceId(eq("existingServiceId"))).willReturn(true);
         ticketManager.setServiceIdService(service);
@@ -207,7 +208,7 @@ public class WebSignControllerTest {
     public final void signMobileBankId() throws Exception {
 
         // Given
-        TicketManager ticketManager = TicketManager.getInstance();
+        TicketManager ticketManager = createTicketManager();
         ServiceIdService serviceIdService = mock(ServiceIdService.class);
         ticketManager.setServiceIdService(serviceIdService);
 
@@ -228,6 +229,14 @@ public class WebSignControllerTest {
 
         // Then
         verify(model).addAttribute("isMobileDevice", true);
+    }
+
+    private TicketManager createTicketManager() {
+        TicketManager ticketManager = new TicketManager();
+        ReflectionTestUtils.setField(ticketManager, "privateKeyBase64", TestConstants.PRIVATE_KEY_BASE_64);
+        ReflectionTestUtils.setField(ticketManager, "publicKeyBase64", TestConstants.PUBLIC_KEY_BASE_64);
+        ticketManager.init();
+        return ticketManager;
     }
 
     @Test

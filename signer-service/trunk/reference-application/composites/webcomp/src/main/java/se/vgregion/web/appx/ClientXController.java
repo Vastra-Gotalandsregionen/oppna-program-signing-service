@@ -1,7 +1,6 @@
 package se.vgregion.web.appx;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.bouncycastle.cms.CMSException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -102,24 +101,13 @@ public class ClientXController {
      * Handler method called by Spring.
      *
      * @return a view
-     * @throws CMSException             CMSException
      * @throws NoSuchAlgorithmException NoSuchAlgorithmException
      * @throws NoSuchProviderException  NoSuchProviderException
      * @throws CertStoreException       CertStoreException
      * @throws IOException              IOException
      */
     @RequestMapping(value = "/showSignStatus", method = GET)
-    public String status() throws CMSException, NoSuchAlgorithmException, NoSuchProviderException,
-            CertStoreException, IOException {
-        // for (Signature signature : getSignatures()) {
-        // String s = signature.getDecoded();
-        //
-        // CMSSignedData signedData = new CMSSignedData(s.getBytes());
-        // Collection<X509CertificateHolder> signerCerts = signedData.getCertificates().getMatches(null);
-        // for (X509CertificateHolder cert : signerCerts) {
-        // System.out.println(cert.getSubject());
-        // }
-        // }
+    public String status() {
         return "showSignatures";
     }
 

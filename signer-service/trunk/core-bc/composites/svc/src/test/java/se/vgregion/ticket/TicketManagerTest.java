@@ -23,14 +23,17 @@ public class TicketManagerTest {
     @Mock
     private ServiceIdService serviceIdService;
 
-    //The signature is created at Ticket creation time.
     @InjectMocks
-    private TicketManager ticketManager = TicketManager.getInstance();
+    private TicketManager ticketManager = new TicketManager();
 
     @Before
     public void setup() {
         //we assume the service-id always exists
         when(serviceIdService.containsServiceId(anyString())).thenReturn(true);
+        ReflectionTestUtils.setField(ticketManager, "privateKeyBase64", TestConstants.PRIVATE_KEY_BASE_64);
+        ReflectionTestUtils.setField(ticketManager, "publicKeyBase64", TestConstants.PUBLIC_KEY_BASE_64);
+
+        ticketManager.init();
     }
 
     @Test

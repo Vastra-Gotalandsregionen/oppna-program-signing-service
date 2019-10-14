@@ -53,11 +53,6 @@
       <artifactId>dao-framework</artifactId>
       <version>3.5</version>
     </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcmail-jdk16</artifactId>
-      <version>1.46</version>
-    </dependency>
   </dependencies>
 
 </project>

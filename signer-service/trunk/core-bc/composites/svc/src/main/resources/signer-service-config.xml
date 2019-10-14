@@ -53,7 +53,7 @@
     <constructor-arg value="${mbi.displayname}"/>
   </bean>
 
-  <bean id="ticketManager" class="se.vgregion.ticket.TicketManager" factory-method="getInstance"/>
+  <bean id="ticketManager" class="se.vgregion.ticket.TicketManager" />
 
   <bean id="serviceIdService" class="se.vgregion.web.security.services.ServiceIdServiceImpl">
     <constructor-arg index="0" value="${user.home}/.ss/service-ids.properties"/>
