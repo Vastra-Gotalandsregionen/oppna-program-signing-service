@@ -31,6 +31,7 @@ import java.security.SignatureException;
 import java.util.Collection;
 import java.util.Set;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
@@ -177,6 +178,19 @@ public class WebSignController extends AbstractSignController {
             return "redirect:" + redirectLocation;
         }
         return "verified";
+    }
+
+    @RequestMapping(value = "/mtls/check-client-certificate", method = GET)
+    @ResponseBody
+    public String checkClientCertificate(HttpServletRequest request) throws SignatureException, TicketException {
+
+        String sslClientSDn = request.getHeader("ssl_client_s_dn");
+
+        if (sslClientSDn == null || sslClientSDn.length() < 10) {
+            throw new SignatureException("No client certificate was provided."); // todo return status code instead.
+        }
+
+        return sslClientSDn;
     }
 
     @RequestMapping(value = "/signMobileBankId", method = POST, params = {"encodedTbs", "submitUri", "personalNumber"})
