@@ -27,7 +27,9 @@ public enum PkiClient {
      */
     NEXUS_PERSONAL_4X(6, XMLDIGSIG),
 
-    MOBILE_BANKID(7, XMLDIGSIG);
+    MOBILE_BANKID(7, XMLDIGSIG),
+
+    MTLS(8, null);
 
     private int id;
     private SignatureFormat signatureFormat;

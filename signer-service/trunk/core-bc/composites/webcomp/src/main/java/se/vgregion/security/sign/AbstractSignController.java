@@ -4,6 +4,7 @@ import java.security.SignatureException;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import se.vgregion.dao.domain.patterns.repository.Repository;
 import se.vgregion.domain.security.pkiclient.ELegType;
 import se.vgregion.domain.security.pkiclient.PkiClient;
@@ -17,8 +18,12 @@ import se.vgregion.web.security.services.SignatureService;
  * @author Anders Asplund - <a href="http://www.callistaenterprise.se">Callista Enterprise</a>
  */
 public abstract class AbstractSignController {
+
+    @Autowired
     private SignatureService signatureService;
+    @Autowired
     private Repository<ELegType, String> eLegTypes;
+    @Autowired
     private TicketManager ticketManager;
 
     /**
@@ -67,7 +72,7 @@ public abstract class AbstractSignController {
      */
     public String prepareSign(SignatureData signData) throws SignatureException {
         encodeTbs(signData);
-        if (!signData.getPkiClient().equals(PkiClient.MOBILE_BANKID)) {
+        if (!(signData.getPkiClient().equals(PkiClient.MOBILE_BANKID) || signData.getPkiClient().equals(PkiClient.MTLS))) {
             String nonce = signatureService.generateNonce(signData.getPkiClient());
             signData.setNonce(nonce);
         }

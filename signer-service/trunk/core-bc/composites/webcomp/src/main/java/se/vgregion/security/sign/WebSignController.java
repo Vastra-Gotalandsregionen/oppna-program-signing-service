@@ -4,18 +4,13 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import se.funktionstjanster.grp.service.v1_0.CollectResponseType;
 import se.funktionstjanster.grp.service.v1_0.ProgressStatusType;
@@ -31,15 +26,9 @@ import se.vgregion.web.security.services.SignatureService;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.security.SignatureException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -57,6 +46,9 @@ public class WebSignController extends AbstractSignController {
 
     private Set<String> internalNetworks;
 
+    @Value("${sign.mtls.url}")
+    private String signMtlsUrl;
+
     /**
      * Constructs an instance of WebSignController.
      *
@@ -64,7 +56,6 @@ public class WebSignController extends AbstractSignController {
      * @param eLegTypes        a repository of e-legitimations
      * @param ticketManager    the {@link TicketManager} to use
      */
-    @Autowired
     public WebSignController(SignatureService signatureService, Repository<ELegType, String> eLegTypes,
                              TicketManager ticketManager) {
         super(signatureService, eLegTypes, ticketManager);
@@ -101,7 +92,7 @@ public class WebSignController extends AbstractSignController {
         LOGGER.info("Incoming sign request from {}", req.getRemoteHost());
         String ticket = signData.getTicket();
 
-        assertPermission(req, ticket);
+        assertPermission(ticket);
 
         model.addAttribute("ticket", signData.getTicket());
         model.addAttribute("signData", signData);
@@ -133,18 +124,15 @@ public class WebSignController extends AbstractSignController {
     public String prepareSign(@ModelAttribute SignatureData signData, Model model, HttpServletRequest req)
             throws SignatureException, TicketException {
         String ticket = signData.getTicket();
-        assertPermission(req, ticket);
-        String pkiPostBackUrl = getPkiPostBackUrl(req);
-        model.addAttribute("postbackUrl", pkiPostBackUrl);
+        assertPermission(ticket);
+
+        model.addAttribute("postbackUrl", signMtlsUrl);
         model.addAttribute("signData", signData);
         model.addAttribute("ticket", ticket);
 
         String pkiClient = super.prepareSign(signData);
 
-        String postUrl = String.format("%s/verify?submitUri=%s&clientType=%s", pkiPostBackUrl, signData.getSubmitUri(),
-                signData.getClientType().getId());
-
-        LOGGER.info("Prepared sign complete. PkiClient: " + pkiClient + ", PostURL: " + postUrl);
+        LOGGER.info("Prepared sign complete. PkiClient: " + pkiClient + ", PostURL: " + signMtlsUrl);
         return pkiClient;
     }
 
@@ -168,13 +156,36 @@ public class WebSignController extends AbstractSignController {
         return "verified";
     }
 
+    @RequestMapping(value = "/mtls/verify", method = POST, params = {"encodedTbs", "submitUri", "clientType"})
+    public String verifyAndSaveMtlsSignature(@ModelAttribute SignatureData signData,
+                                             HttpServletRequest request) throws SignatureException, TicketException {
+        String ticket = signData.getTicket();
+        assertPermission(ticket);
+
+        String sslClientSDn = request.getHeader("ssl_client_s_dn");
+
+        if (sslClientSDn == null || sslClientSDn.length() < 10) {
+            throw new SignatureException("No client certificate was provided.");
+        }
+
+        signData.setSignature("Certificate subject: " + sslClientSDn);
+
+        String redirectLocation = getSignatureService().save(signData);
+        if (!StringUtils.isBlank(redirectLocation)) {
+            LOGGER.debug(String.format("WebSignController.verifyAndSaveSignature(%s)\n", "redirect:"
+                    + redirectLocation));
+            return "redirect:" + redirectLocation;
+        }
+        return "verified";
+    }
+
     @RequestMapping(value = "/signMobileBankId", method = POST, params = {"encodedTbs", "submitUri", "personalNumber"})
     public String signMobileBankId(@ModelAttribute SignatureData signData, HttpServletRequest request, Model model)
             throws SignatureException, TicketException {
 
         String ticket = signData.getTicket();
 
-        assertPermission(request, ticket);
+        assertPermission(ticket);
 
         String orderRef = getSignatureService().sendMobileSignRequest(signData, request.getRemoteAddr());
 
@@ -311,7 +322,7 @@ public class WebSignController extends AbstractSignController {
         return pkiPostUrl.toString();
     }
 
-    private void assertPermission(HttpServletRequest req, String ticket) throws TicketException {
+    private void assertPermission(String ticket) throws TicketException {
         if (ticket != null && ticket.length() > 0) {
             TicketDto ticketDto = new TicketDto(ticket);
             LOGGER.debug("Ticket used: " + ticketDto.toString());

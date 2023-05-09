@@ -75,7 +75,14 @@ public class ClientXController {
     @RequestMapping(value = "/saveSignature", method = POST)
     public void postback(HttpServletRequest req, HttpServletResponse response,
                          @RequestBody SignatureEnvelope envelope) throws IOException {
-        StringBuilder relocateUrl = new StringBuilder(httpScheme + "://").append(req.getLocalName()).append(":" + httpPort)
+
+        String host = req.getHeader("x-forwarded-host");
+
+        if (host == null) {
+            host = req.getLocalName() + ":" + httpPort;
+        }
+
+        StringBuilder relocateUrl = new StringBuilder(httpScheme + "://").append(host)
                 .append(req.getContextPath()).append(req.getServletPath());
 
         if (envelope.getErrorCode() > 0) {

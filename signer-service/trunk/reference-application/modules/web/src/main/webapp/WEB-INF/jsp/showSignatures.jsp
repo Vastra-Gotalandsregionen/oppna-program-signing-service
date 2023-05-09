@@ -17,7 +17,7 @@
             <form action="verifySignature" method="post">
                     Format: ${signature.format}
                     <p>
-                    <pre><c:out value="${signature.decoded}" escapeXml="true"/></pre>
+                    <pre><c:out value="${signature.encoded}" escapeXml="true"/></pre>
                     </p>
                 <br/>
                 <input type="hidden" name="signature" value="${signature.encoded}" />

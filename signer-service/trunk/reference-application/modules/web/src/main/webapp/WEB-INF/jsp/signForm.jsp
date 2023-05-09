@@ -24,7 +24,7 @@
           <input type="hidden" name="submitUri" id="submitUri_http" value="${submitUrl}"/>
           <input type="hidden" name="ticket" id="ticket" value="${ticket}"/>
             <%-- Optional parameter: clientType --%>
-          <%--<input type="hidden" name="clientType" id="clientType" value="SITHS"/>--%>
+          <input type="hidden" name="clientType" id="clientType" value="MTLS"/>
         </li>
       </ul>
     </fieldset>

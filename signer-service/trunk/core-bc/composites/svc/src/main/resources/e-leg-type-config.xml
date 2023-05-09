@@ -43,6 +43,12 @@
           <constructor-arg name="description" value="Använd din smartphone för att signera. Detta alternativ kan väljas oavsett om du surfar med din smartphone eller en dator. Använder du datorn kommer du behöva starta appen Mobilt BankId manuellt i din smartphone." />
           <constructor-arg name="pkiClient" value="MOBILE_BANKID" />
         </bean>
+        <bean class="se.vgregion.domain.security.pkiclient.ELegType">
+          <constructor-arg name="id" value="MTLS" />
+          <constructor-arg name="name" value="MTLS" />
+          <constructor-arg name="description" value="Signering via mTLS" />
+          <constructor-arg name="pkiClient" value="MTLS" />
+        </bean>
       </list>
     </property>
   </bean>

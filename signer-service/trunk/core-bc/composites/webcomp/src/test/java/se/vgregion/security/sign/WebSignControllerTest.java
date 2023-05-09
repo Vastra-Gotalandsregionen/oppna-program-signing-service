@@ -49,6 +49,8 @@ public class WebSignControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         signController = new WebSignController(signatureService, eLegTypes, createTicketManager());
+
+        ReflectionTestUtils.setField(signController, "signMtlsUrl", "http://example.com:7080/ss/sign");
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -126,35 +128,6 @@ public class WebSignControllerTest {
         assertTrue(model.asMap().containsValue(signData));
         assertTrue(model.asMap().containsKey("postbackUrl"));
         assertEquals("http://example.com:7080/ss/sign", model.asMap().get("postbackUrl"));
-    }
-
-    @Test
-    public final void shouldPrepareForSecureSignClientRequest() throws Exception {
-        // Given
-        final SignatureData signData = new SignatureData();
-        final PkiClient clientType = PkiClient.NETMAKER_NETID_4;
-        final String encodedTbs = "encodedTbs";
-        final String nonce = "nonce";
-        final Model model = new ExtendedModelMap();
-        signData.setClientType(new ELegType("", "", "", clientType));
-        setATicketOnSignatureData(signData);
-
-        given(signatureService.encodeTbs(anyString(), any(PkiClient.class))).willReturn(encodedTbs);
-        given(signatureService.generateNonce(any(PkiClient.class))).willReturn(nonce);
-        given(request.isSecure()).willReturn(true);
-        given(request.getServerName()).willReturn("example.com");
-        given(request.getServerPort()).willReturn(7080);
-        given(request.getContextPath()).willReturn("/ss");
-
-        // When
-        String viewName = signController.prepareSign(signData, model, request);
-
-        // Then
-        assertEquals(clientType.toString(), viewName);
-        assertTrue(model.asMap().containsKey("signData"));
-        assertTrue(model.asMap().containsValue(signData));
-        assertTrue(model.asMap().containsKey("postbackUrl"));
-        assertEquals("https://example.com:7080/ss/sign", model.asMap().get("postbackUrl"));
     }
 
     @Test

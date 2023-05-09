@@ -35,10 +35,8 @@ public final class TicketManager {
     private static final int KEY_SIZE = 1024;
     private static final String SIGNATURE_ALGORITHM = "SHA256withDSA";
 
-    @Value("${ticket.sign.key.private}")
     private String privateKeyBase64;
 
-    @Value("${ticket.sign.key.public}")
     private String publicKeyBase64;
 
     private ServiceIdService serviceIdService;
@@ -93,6 +91,14 @@ public final class TicketManager {
     @Autowired
     public void setServiceIdService(ServiceIdService serviceIdService) {
         this.serviceIdService = serviceIdService;
+    }
+
+    public void setPrivateKeyBase64(String privateKeyBase64) {
+        this.privateKeyBase64 = privateKeyBase64;
+    }
+
+    public void setPublicKeyBase64(String publicKeyBase64) {
+        this.publicKeyBase64 = publicKeyBase64;
     }
 
     /**
