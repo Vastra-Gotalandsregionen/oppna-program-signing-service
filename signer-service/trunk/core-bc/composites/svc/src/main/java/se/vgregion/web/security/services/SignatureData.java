@@ -5,6 +5,8 @@ package se.vgregion.web.security.services;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 import se.vgregion.domain.security.pkiclient.ELegType;
 import se.vgregion.domain.security.pkiclient.PkiClient;
 
@@ -22,6 +24,13 @@ import java.net.URISyntaxException;
 public class SignatureData implements Serializable {
 
     private static final long serialVersionUID = -4504464078848411704L;
+    private transient PolicyFactory policy;
+
+    public SignatureData() {
+        policy = new HtmlPolicyBuilder()
+                .allowElements("br")
+                .toFactory();
+    }
 
     private String submitUri;
     private String nonce = "";
@@ -50,7 +59,7 @@ public class SignatureData implements Serializable {
     }
 
     public void setTbs(String tbs) {
-        this.tbs = tbs;
+        this.tbs = tbs != null ? policy.sanitize(tbs) : null;
     }
 
     public void setEncodedTbs(String encodedTbs) {

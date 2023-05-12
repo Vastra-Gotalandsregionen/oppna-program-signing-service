@@ -25,6 +25,7 @@
 
     <input type="submit" value="Signera"/>
 </form>
+<%--
 <input type="hidden" name="DataToBeSigned" value="${signData.encodedTbs}"/>
 <input type="hidden" name="PostURL"
        value="${postbackUrl}/verify?submitUri=${signData.submitUri}&clientType=${signData.clientType.id}"/>
@@ -32,7 +33,7 @@
     <input type="hidden" name="submitUri" value="${signData.submitUri}"/>
     <input type="hidden" name="clientType" value="${signData.clientType.id}"/>
     <input type="hidden" id="errorCode" name="errorCode"/>
-</form>
+</form>--%>
 
 
 </body>
