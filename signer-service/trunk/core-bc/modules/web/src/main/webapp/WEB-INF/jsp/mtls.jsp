@@ -12,7 +12,8 @@
     </style>
 </head>
 
-<body>
+<body style="font-family: Helvetica, Arial, sans-serif; font-size: 16px">
+
 <form action="${postbackUrl}" method="post">
 <%--    <input type="hidden" name="DataToBeSigned" value="${signData.encodedTbs}"/>--%>
     <input type="hidden" name="encodedTbs" value="${signData.encodedTbs}"/>
@@ -20,10 +21,12 @@
     <input type="hidden" name="clientType" value="${signData.clientType.id}"/>
     <input type="hidden" name="ticket" value="${ticket}"/>
 
-    <p>Jag signerar:</p>
-    <p>${signData.tbs}</p>
-
-    <input type="submit" value="Signera"/>
+    <div style="display: block; max-width: 400px; padding: 0 12px">
+        <p><strong>Jag signerar:</strong></p>
+        <p>${signData.tbs}</p>
+        <input style="margin-top: 12px; padding: 6px; font-size: 1em" type="submit" value="Signera beställning"/>
+        <p style="color: red">OBS! din pinkod sparas efter första signeringen. Vid efterföljande signeringar under samma session behöver du inte ange din pinkod igen.</p>
+    </div>
 </form>
 <%--
 <input type="hidden" name="DataToBeSigned" value="${signData.encodedTbs}"/>
