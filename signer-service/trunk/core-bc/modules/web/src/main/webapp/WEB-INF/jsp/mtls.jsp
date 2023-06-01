@@ -25,7 +25,7 @@
         <p><strong>Jag signerar:</strong></p>
         <p>${signData.tbs}</p>
         <input style="margin-top: 12px; padding: 6px; font-size: 1em" type="submit" value="Signera beställning"/>
-        <p style="color: red">OBS! din pinkod sparas efter första signeringen. Vid efterföljande signeringar under samma session behöver du inte ange din pinkod igen.</p>
+        <p style="color: red">OBS! Använd PIN1 för autentisering/legitimering. Din pinkod sparas efter första signeringen. Vid efterföljande signeringar under samma session behöver du inte ange din pinkod igen.</p>
     </div>
 </form>
 <%--
