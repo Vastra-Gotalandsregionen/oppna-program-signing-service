@@ -1,3 +1,18 @@
+# Svenska
+
+## Arkiverat projekt
+
+Detta repository är arkiverat och underhålls inte längre.
+
+---
+
+# English
+
+## Archived project
+
+---
+
+This repository has been archived and is no longer maintained.
 
 <td id="wikicontent" class="psdescription">
   <h2>
